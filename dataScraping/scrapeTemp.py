@@ -1,7 +1,15 @@
-#TODO: look into beautiful soup and requests libraries for queries information
+#Author: Eduardo Ortega
+from bs4 import BeautifulSoup
+import numpy as np
+import requests
+import cv2
+import PIL.image
+import urllib
+
+SUNSET=""
 
 def main():
-	print("Connecting to server to scrape images.....")
+    #TODO: waiting on approival from imagenet
 
 if __name__ == "__main__":
 	main()
