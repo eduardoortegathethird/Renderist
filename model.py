@@ -1,5 +1,4 @@
 import tensorflow as tf
-
 import numpy as np
 import PIL.Image
 
@@ -86,7 +85,7 @@ def style_transfer_image(
     content,
     style,
     epochs=10,
-    steps_per_epoch=50,
+    steps_per_epoch=100,
     style_weight=1e-2,
     content_weight=1e4,
     total_variation_weight=30,
@@ -162,19 +161,17 @@ def style_transfer_image(
         img = tensor_to_image(image)
         img.save(f"{save_name}-{n}.png")
 
-
-if __name__ == "__main__":
+def main():
+    print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+    
+    from tensorflow.python.client import device_lib
+    print(device_lib.list_local_devices())
+    
+    quit()
     style_transfer_image(
         "images/content/city.jpg", "images/style/greatwave.jpg", save_name="blend-wave",
         style_weight=1e-2, content_weight=1e4, total_variation_weight=30,
     )
-    '''
-    style_transfer_image(
-        "blend.png", "images/style/greatwave.jpg", save_name="blend-weighted",
-        style_weight=1e-2, content_weight=3e4, total_variation_weight=30,
-    )
-    style_transfer_image(
-        "blend.png", "images/style/greatwave.jpg", save_name="blend-styled",
-        style_weight=3e-2, content_weight=1e4, total_variation_weight=30,
-    )
-    '''
+
+if __name__=="__main__":
+    main()
