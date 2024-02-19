@@ -1,6 +1,10 @@
 import tensorflow as tf
 import numpy as np
 import PIL.Image
+import create_gif_params as param
+x = param.x
+y = param.y
+z = param.z
 
 
 def tensor_to_image(tensor):
@@ -161,17 +165,30 @@ def style_transfer_image(
         img = tensor_to_image(image)
         img.save(f"{save_name}-{n}.png")
 
-def main():
+def convert_parametric(x, y, z):
+    sw_l = [1**s for s in x]
+    cw_l = [1**s for s in y]
+    tvw_l = [abs(10*s) for s in z]
+    return sw_l, cw_l, tvw_l
+
+def sim(gif_weights=True):
     print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
     
     from tensorflow.python.client import device_lib
     print(device_lib.list_local_devices())
-    
+    sw_l, cw_l, tvw_l = convert_parametric(x, y, z)
+    if gif_weights:
+        
     quit()
-    style_transfer_image(
-        "images/content/city.jpg", "images/style/greatwave.jpg", save_name="blend-wave",
-        style_weight=1e-2, content_weight=1e4, total_variation_weight=30,
-    )
+    style_transfer_image("images/content/city.jpg", 
+                        "images/style/greatwave.jpg", 
+                        save_name="out/blend-wave",
+                        style_weight=1e-2, 
+                        content_weight=1e4, 
+                        total_variation_weight=30,)
+
+def main():
+    sim()
 
 if __name__=="__main__":
     main()
