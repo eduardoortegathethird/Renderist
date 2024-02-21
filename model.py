@@ -88,8 +88,8 @@ class StyleContentModel(tf.keras.models.Model):
 def style_transfer_image(
     content,
     style,
-    epochs=10,
-    steps_per_epoch=500,
+    epochs=9,
+    steps_per_epoch=1000,
     style_weight=1e-2,
     content_weight=1e4,
     total_variation_weight=30,
@@ -178,12 +178,12 @@ def sim(gif_weights=True):
     sw_l, cw_l, tvw_l = convert_parametric(x, y, z)
     if gif_weights:
        print("MAKING GIF OF THE ACTUAL INPUTS") 
-    style_transfer_image("images/content/city.jpg", 
+    style_transfer_image("images/content/deepspace.jpg", 
                         "images/style/greatwave.jpg", 
                         save_name="out/blend-wave",
                         style_weight=1e-2, 
                         content_weight=1e4, 
-                        total_variation_weight=30,)
+                        total_variation_weight=30,steps_per_epoch=30)
 
 def main():
     sim()
