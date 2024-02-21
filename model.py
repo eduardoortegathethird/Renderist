@@ -89,7 +89,7 @@ def style_transfer_image(
     content,
     style,
     epochs=10,
-    steps_per_epoch=100,
+    steps_per_epoch=500,
     style_weight=1e-2,
     content_weight=1e4,
     total_variation_weight=30,
@@ -172,14 +172,12 @@ def convert_parametric(x, y, z):
     return sw_l, cw_l, tvw_l
 
 def sim(gif_weights=True):
-    print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
-    
-    from tensorflow.python.client import device_lib
-    print(device_lib.list_local_devices())
+    #print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+    #from tensorflow.python.client import device_lib
+    #print(device_lib.list_local_devices())
     sw_l, cw_l, tvw_l = convert_parametric(x, y, z)
     if gif_weights:
-        
-    quit()
+       print("MAKING GIF OF THE ACTUAL INPUTS") 
     style_transfer_image("images/content/city.jpg", 
                         "images/style/greatwave.jpg", 
                         save_name="out/blend-wave",
