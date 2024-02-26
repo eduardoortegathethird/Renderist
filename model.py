@@ -123,7 +123,7 @@ def style_transfer_image(
     def clip_0_1(image):
         return tf.clip_by_value(image, clip_value_min=0.0, clip_value_max=1.0)
 
-    opt = tf.optimizers.Adam(learning_rate=0.02, beta_1=0.99, epsilon=1e-1)
+    opt = tf.optimizers.Adam(learning_rate=0.01, beta_1=0.99, epsilon=1e-1)
 
     def style_content_loss(outputs):
         style_outputs = outputs["style"]
@@ -175,15 +175,17 @@ def sim(gif_weights=True):
     #print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
     #from tensorflow.python.client import device_lib
     #print(device_lib.list_local_devices())
-    sw_l, cw_l, tvw_l = convert_parametric(x, y, z)
+    #sw_l, cw_l, tvw_l = convert_parametric(x, y, z)
     if gif_weights:
        print("MAKING GIF OF THE ACTUAL INPUTS") 
-    style_transfer_image("images/content/deepspace.jpg", 
-                        "images/style/greatwave.jpg", 
-                        save_name="out/blend-wave",
-                        style_weight=1e-2, 
-                        content_weight=1e4, 
-                        total_variation_weight=30,steps_per_epoch=30)
+    for style in ["greatwave.jpg", "art.jpg", "scream.jpg"]:
+        suffix = style.split(".")[0]
+        style_transfer_image("images/content/city.jpg", 
+                        f"images/style/{style}", 
+                        save_name=f"out/blend-{suffix}",
+                        style_weight=1e-3, 
+                        content_weight=2e2, 
+                        total_variation_weight=30, steps_per_epoch=70)
 
 def main():
     sim()
