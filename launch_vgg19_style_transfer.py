@@ -178,7 +178,7 @@ def sim(gif_weights=True):
     #sw_l, cw_l, tvw_l = convert_parametric(x, y, z)
     if gif_weights:
        print("MAKING GIF OF THE ACTUAL INPUTS") 
-    for style in ["greatwave.jpg", "art.jpg", "scream.jpg"]:
+    for style in ["art.jpg", "scream.jpg"]:
         suffix = style.split(".")[0]
         style_transfer_image("images/content/city.jpg", 
                         f"images/style/{style}", 
