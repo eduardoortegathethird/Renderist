@@ -176,18 +176,21 @@ def sim(cw, sw, tvw, idx, content_path, style_path):
     suffix = style_path.split('/')[-1].split('.')[0]
     style_transfer_image(content_path, 
                         style_path, 
-                        save_name=f"out/blend-param{idx}-{suffix}",
+                        save_name=f"test_out/blend-param{idx}-{suffix}",
                         style_weight=sw, 
                         content_weight=cw, 
                         total_variation_weight=tvw, 
-                        steps_per_epoch=70)
+                        steps_per_epoch=300,
+                        epochs=3)
 
 def main():
     df = pd.read_csv('parametric_xyz.csv')
     x, y, z = df['x'], df['y'], df['z']
     sw, cw, tvw = convert_parametric(x, y, z)
-    content_path = 'images/content/city.jpg'
-    style_path = 'images/style/scream.jpg'
+    content_path = 'images/content/weep_women.jpg'
+    style_list = ['Matisse-Woman-with-a-Hat.jpg', 'bathers.jpg', 
+                    'christina_world.jpg', 'turkish_oda.jpg']
+    style_path = f'images/style/{style_list[2]}'
     args = parser.parse_args()
     i = int(args.idx)
     sim(cw[i], sw[i], tvw[i], i, content_path, style_path)
