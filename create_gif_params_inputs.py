@@ -6,29 +6,35 @@ import pandas as pd
 import glob
 from PIL import Image
 
-num_points = 25
-# Prepare arrays x, y, z
-theta = np.linspace(-4 * np.pi, 4 * np.pi, num_points)
-z = np.linspace(-2, 2, num_points)
-r = z**2 + 1
-x = r * np.sin(theta)
-y = r * np.cos(theta)
-df = pd.DataFrame()
-df['z'] = z
-df['x'] = x
-df['y'] = y
-df.to_csv("parametric_xyz.csv")
+
+
+def convert_parametric(x, y, z):
+    sw_l = [1.01**s for s in x]
+    cw_l = [1.01**s for s in y]
+    tvw_l = [abs(10*s) for s in z]
+    return sw_l, cw_l, tvw_l
+
+# Prepare inputs
+df = pd.read_csv('parametric_xyz.csv')
+z = df['z']
+x = df['x']
+y = df['y']
+sw, cw, tvw = convert_parametric(x, y, z)
+
 for s in range(1,len(x)):    
     ax = plt.figure().add_subplot(projection='3d')
-    s_x = x[0:s]
-    s_y = y[0:s]
-    s_z = z[0:s]
-    ax.plot(x, y, z, label='parametric curve')
-    ax.scatter(s_x, s_y, s_z, label='Variable Interpolation')
+    s_x = sw[0:s]
+    s_y = cw[0:s]
+    s_z = tvw[0:s]
+    ax.plot(x, y, z, label='training weights curve')
+    ax.scatter(s_x, s_y, s_z, label='Current weights')
+    ax.set_xlabel('style weight')
+    ax.set_ylabel('content weight')
+    ax.set_zlabel('tot. var. weight')
     ax.legend()
-    plt.savefig(f'PARAM/fig_{s}.png')
+    plt.savefig(f'PARAM/input_{s}.png')
 
-files = glob.glob(r"PARAM/fig_*.png")
+files = glob.glob(r"PARAM/input_*.png")
 images = []
 for my_file in files:
     i = Image.open(my_file)
@@ -49,4 +55,4 @@ animation_fig = animation.FuncAnimation(fig, update, frames=len(images), interva
 # Show the animation
 #plt.show()
 
-animation_fig.save("PARAMS.gif")
+animation_fig.save("INPUTS.gif")
