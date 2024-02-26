@@ -9,8 +9,8 @@ from PIL import Image
 
 
 def convert_parametric(x, y, z):
-    sw_l = [s**2 for s in x]
-    cw_l = [abs(s*2) for s in y]
+    sw_l = [abs(s/4) for s in x]
+    cw_l = [abs(s/4) for s in y]
     tvw_l = [2**s for s in z]
     return sw_l, cw_l, tvw_l
 
