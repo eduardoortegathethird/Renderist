@@ -2,15 +2,22 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import numpy as np
+import pandas as pd
 import glob
 from PIL import Image
 
+num_points = 25
 # Prepare arrays x, y, z
-theta = np.linspace(-4 * np.pi, 4 * np.pi, 100)
-z = np.linspace(-2, 2, 100)
+theta = np.linspace(-4 * np.pi, 4 * np.pi, num_points)
+z = np.linspace(-2, 2, num_points)
 r = z**2 + 1
 x = r * np.sin(theta)
 y = r * np.cos(theta)
+df = pd.DataFrame()
+df['z'] = z
+df['x'] = x
+df['y'] = y
+df.to_csv("parametric_xyz.csv")
 for s in range(1,len(x)):    
     ax = plt.figure().add_subplot(projection='3d')
     s_x = x[0:s]
