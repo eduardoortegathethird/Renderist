@@ -1,11 +1,16 @@
+# Author Eduardo Ortega
 import tensorflow as tf
 import numpy as np
 import PIL.Image
-import create_gif_params as param
-x = param.x
-y = param.y
-z = param.z
+import argparse
 
+parser = argparse.ArgumentParser(description="inputs for vgg19 style transfer")
+
+parser.add_argument('--content', type=str, help='content path')
+parser.add_argument('--style', type=str, help='style path')
+parser.add_argument('--sw', type=str, help='style weight')
+parser.add_argument('--cw', type=str, help='content weight')
+parser.add_argument('--tvw', type=str, help='total variation weight')
 
 def tensor_to_image(tensor):
     tensor = tensor * 255
@@ -171,24 +176,25 @@ def convert_parametric(x, y, z):
     tvw_l = [abs(10*s) for s in z]
     return sw_l, cw_l, tvw_l
 
-def sim(gif_weights=True):
-    #print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
-    #from tensorflow.python.client import device_lib
-    #print(device_lib.list_local_devices())
-    #sw_l, cw_l, tvw_l = convert_parametric(x, y, z)
-    if gif_weights:
-       print("MAKING GIF OF THE ACTUAL INPUTS") 
-    for style in ["art.jpg", "scream.jpg"]:
-        suffix = style.split(".")[0]
-        style_transfer_image("images/content/city.jpg", 
-                        f"images/style/{style}", 
+def sim(args):
+    content_path = args.content
+    style_path = args.style
+    suffix = style_path.split('/')[-1].split('.')[0]
+    print(args.sw, args.cw, args.tvw)
+    sw = float(args.sw)
+    cw = float(args.cw)
+    tvw = float(args.tvw)
+    style_transfer_image(content_path, 
+                        style_path, 
                         save_name=f"out/blend-{suffix}",
-                        style_weight=1e-3, 
-                        content_weight=2e2, 
-                        total_variation_weight=30, steps_per_epoch=70)
+                        style_weight=sw, 
+                        content_weight=cw, 
+                        total_variation_weight=tvw, 
+                        steps_per_epoch=70)
 
 def main():
-    sim()
+    args = parser.parse_args()
+    sim(args)
 
 if __name__=="__main__":
     main()

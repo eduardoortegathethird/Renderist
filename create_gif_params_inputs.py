@@ -9,9 +9,9 @@ from PIL import Image
 
 
 def convert_parametric(x, y, z):
-    sw_l = [1.01**s for s in x]
-    cw_l = [1.01**s for s in y]
-    tvw_l = [abs(10*s) for s in z]
+    sw_l = [(3**s) for s in x]
+    cw_l = [abs(s) for s in y]
+    tvw_l = [2**s for s in z]
     return sw_l, cw_l, tvw_l
 
 # Prepare inputs
@@ -26,12 +26,12 @@ for s in range(1,len(x)):
     s_x = sw[0:s]
     s_y = cw[0:s]
     s_z = tvw[0:s]
-    ax.plot(x, y, z, label='training weights curve')
+    ax.plot(sw, cw, tvw, label='training weights curve')
     ax.scatter(s_x, s_y, s_z, label='Current weights')
     ax.set_xlabel('style weight')
     ax.set_ylabel('content weight')
     ax.set_zlabel('tot. var. weight')
-    ax.legend()
+    ax.legend(loc='upper center')
     plt.savefig(f'PARAM/input_{s}.png')
 
 files = glob.glob(r"PARAM/input_*.png")

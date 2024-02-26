@@ -1,11 +1,12 @@
+# Author Eduardo Ortega
 import tensorflow as tf
 import numpy as np
+import pandas as pd
 import PIL.Image
-import create_gif_params as param
-x = param.x
-y = param.y
-z = param.z
+import argparse
 
+parser = argparse.ArgumentParser(description='IDX')
+parser.add_argument('--idx', type=str, help="IDX of list")
 
 def tensor_to_image(tensor):
     tensor = tensor * 255
@@ -166,29 +167,30 @@ def style_transfer_image(
         img.save(f"{save_name}-{n}.png")
 
 def convert_parametric(x, y, z):
-    sw_l = [1**s for s in x]
-    cw_l = [1**s for s in y]
+    sw_l = [1.01**s for s in x]
+    cw_l = [1.01**s for s in y]
     tvw_l = [abs(10*s) for s in z]
     return sw_l, cw_l, tvw_l
 
-def sim(gif_weights=True):
-    #print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
-    #from tensorflow.python.client import device_lib
-    #print(device_lib.list_local_devices())
-    #sw_l, cw_l, tvw_l = convert_parametric(x, y, z)
-    if gif_weights:
-       print("MAKING GIF OF THE ACTUAL INPUTS") 
-    for style in ["art.jpg", "scream.jpg"]:
-        suffix = style.split(".")[0]
-        style_transfer_image("images/content/city.jpg", 
-                        f"images/style/{style}", 
-                        save_name=f"out/blend-{suffix}",
-                        style_weight=1e-3, 
-                        content_weight=2e2, 
-                        total_variation_weight=30, steps_per_epoch=70)
+def sim(cw, sw, tvw, idx, content_path, style_path):
+    suffix = style_path.split('/')[-1].split('.')[0]
+    style_transfer_image(content_path, 
+                        style_path, 
+                        save_name=f"out/blend-param{idx}-{suffix}",
+                        style_weight=sw, 
+                        content_weight=cw, 
+                        total_variation_weight=tvw, 
+                        steps_per_epoch=70)
 
 def main():
-    sim()
+    df = pd.read_csv('parametric_xyz.csv')
+    x, y, z = df['x'], df['y'], df['z']
+    sw, cw, tvw = convert_parametric(x, y, z)
+    content_path = 'images/content/city.jpg'
+    style_path = 'images/style/scream.jpg'
+    args = parser.parse_args()
+    i = int(args.idx)
+    sim(cw[i], sw[i], tvw[i], i, content_path, style_path)
 
 if __name__=="__main__":
     main()
